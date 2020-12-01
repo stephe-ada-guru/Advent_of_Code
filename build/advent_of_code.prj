@@ -1,0 +1,5 @@
+gpr_file=advent_of_code.gpr
+
+casing=advent_of_code.casing
+
+-- end of file

@@ -1,0 +1,62 @@
+project Advent_Of_Code is
+
+   for Source_Dirs use ("../2020");
+
+   for Object_Dir use "obj";
+   for Exec_Dir use ".";
+
+   Base_Style_Checks := "-gnaty3abcefhiklnOprtx";
+   Line_Length := "-gnatyM120";
+
+   Style_Checks := (Base_Style_Checks, Line_Length);
+
+   Common_Switches :=
+     (
+      "-fstack-check",
+      "-g",
+      "-gnatfqQ", -- f = all error messages, qQ = process semantics, generate .ali if syntax errors
+      "-gnatw.d", -- warnings about tags
+      "-gnatwaBCeJL", -- wa = most warnings, wB = no warn on bad fixed values, wC = no warn on conditionals
+      -- we = error on warning, wJ = no warn on obsolescent, wL = no warn on elaboration
+      "-gnatyO" -- warn on overriding
+     );
+
+   --  -gnatVa causes some inline procedures to be non-inlineable;
+   --  suppress that warning with -gnatwP.
+   Base_Debug_Switches := Common_Switches &
+     (
+      "-O0", --  we don't use -Og because that causes gdb to report incorrect results in some cases in Ada.
+      "-gnata",  -- assertions, pre/post-conditions
+      "-gnatVa", -- validity checks
+      "-gnateE", -- extra info in exceptions
+      "-gnatwaP" -- no warn on Inline
+     );
+
+   Debug_Switches := Base_Debug_Switches &
+     ("-gnat2020", -- @, declare_expression
+      "-gnatX"); -- reduction expressions
+
+   --  -O3 is measurably faster than -O2 for wisitoken generate
+   --  LR1. We include -fstack-check because it catches
+   --  hard-to-find bugs, and the processors are so fast.
+   --  -fno-var-tracking-assignments speeds compiling of large
+   --  files; var tracking is only useful for debugging.
+   Base_Release_Switches := Common_Switches &
+     (
+      "-O3",
+      "-fno-var-tracking-assignments",
+      "-gnatyO"
+     );
+
+   Inlining := ("-gnatn");
+
+   Release_Switches := Base_Release_Switches & Inlining &
+     "-gnat2020" & -- @
+     "-gnatX" -- reduction expressions
+   ;
+
+   package Compiler is
+      for Default_Switches ("Ada") use Debug_Switches & Style_Checks;
+   end Compiler;
+
+end Advent_Of_Code;
