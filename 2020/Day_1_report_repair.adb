@@ -18,7 +18,7 @@ pragma License (Modified_GPL);
 with Ada.Command_Line;
 with Ada.Containers.Vectors;
 with Ada.Text_IO; use Ada.Text_IO;
-procedure D1P1_Report_Repair
+procedure Day_1_Report_Repair
 is
    package Int_Vectors is new Ada.Containers.Vectors
      (Index_Type   => Natural,
@@ -42,7 +42,23 @@ begin
             Put_Line
               (I'Image & J'Image & ":" & Integer'Image (Data (I)) & Integer'Image (Data (J)) & ":" &
                  Integer'(Data (I) * Data (J))'Image);
+            exit;
          end if;
       end loop;
    end loop;
-end D1P1_Report_Repair;
+
+   for I in Data.First_Index .. Data.Last_Index loop
+      for J in I + 1 .. Data.Last_Index loop
+         for K in J + 1 .. Data.Last_Index loop
+            if Data (I) + Data (J) + Data (K) = 2020 then
+               Put_Line
+                 (I'Image & J'Image & K'Image &
+                    ":" & Integer'Image (Data (I)) & Integer'Image (Data (J)) & Integer'Image (Data (K)) &
+                    ":" & Integer'Image (Data (I) * Data (J) * Data (K)));
+               exit;
+            end if;
+         end loop;
+      end loop;
+   end loop;
+
+end Day_1_Report_Repair;
