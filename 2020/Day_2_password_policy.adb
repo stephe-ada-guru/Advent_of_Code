@@ -1,10 +1,4 @@
---  Abstract :
---
---  Advent of code 2020 day 1 puzzle 1
---
---  https://adventofcode.com/2020/day/1
---
---  Copyright (C) 2020 Free Software Foundation All Rights Reserved.
+--  Copyright (C) 2020 Stephen Leake All Rights Reserved.
 --
 --  This library is free software;  you can redistribute it and/or modify it
 --  under terms of the  GNU General Public License  as published by the Free
