@@ -1,0 +1,16 @@
+day 4 puzzle 1 263 is too low; 264 is right
+puzzle 2 225 too high
+
+'correct' aoc_2020_04_b_full_ada.adb gets 225
+    differ at line 558
+    pid has 10 digits
+
+passports: 295
+valid    : 225
+invalid  : 70
+
+
+  https://adventofcode.com/2020/
+  user id: 974367-20201128-04f35ee5
+
+https://github.com/reznikmm/ada-howto/tree/advent-2020

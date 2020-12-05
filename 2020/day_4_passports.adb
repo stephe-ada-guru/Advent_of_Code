@@ -144,7 +144,7 @@ begin
                      return Match (Eye_Color, Data);
 
                   when Pid =>
-                     return Match (ID, Data);
+                     return Match (ID, Data) and Data'Length = 9;
 
                   when Other =>
                      return True;
@@ -188,9 +188,7 @@ begin
          New_Line (Output_File);
 
          if Valid (Byr .. Pid) = (Required_Field_Labels => True) then
-            if Verbose then
-               Put_Line ("valid passport");
-            end if;
+            Put_Line ("valid passport line" & Positive_Count'Image (Line (Input_File) - 2));
             Valid_Passports := @ + 1;
          else
             if Verbose then
