@@ -16,6 +16,7 @@ pragma License (GPL);
 with Ada.Text_IO;
 with Day_7_Handy_Haversacks_Actions; use Day_7_Handy_Haversacks_Actions;
 with SAL;
+with WisiToken.Syntax_Trees.LR_Utils;
 package body Day_7_Handy_Haversacks_Runtime is
 
    overriding
@@ -36,8 +37,6 @@ package body Day_7_Handy_Haversacks_Runtime is
       Tokens    : in     WisiToken.Syntax_Trees.Valid_Node_Access_Array)
    is
       pragma Unreferenced (Nonterm);
-
-      use all type SAL.Base_Peek_Type;
 
       Data : Day_7_Handy_Haversacks_Runtime.User_Data renames Day_7_Handy_Haversacks_Runtime.User_Data (User_Data);
 
@@ -61,19 +60,30 @@ package body Day_7_Handy_Haversacks_Runtime is
          end if;
       end Find_Add_Color;
 
+      Colors : Color_Lists.List;
    begin
+      case To_Token_Enum (Tree.ID (Tokens (4))) is
+      when contained_bags_ID =>
+         declare
+            use WisiToken.Syntax_Trees.LR_Utils;
+            Bags : constant Constant_List := Creators.Create_List
+              (Tree, Tokens (4), +contained_bags_ID, +contained_bag_ID);
+         begin
+            for Bag of Bags loop
+               Colors.Append (Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tree.Child (Bag, 2)))));
+            end loop;
+         end;
+      when NO_ID =>
+         null;
+
+      when others =>
+         raise SAL.Programmer_Error;
+      end case;
+
       Data.Rules.Append
         ((Containing_Color => Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tokens (1)))),
-          Contained_Color_1 =>
-            (case To_Token_Enum (Tree.ID (Tokens (4))) is
-             when NUMBER_ID => Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tokens (5)))),
-             when NO_ID => No_Color,
-             when others => raise SAL.Programmer_Error),
-          Contained_Color_2 =>
-            (if Tokens'Last = 11
-             then Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tokens (9))))
-             else No_Color),
-          Contains_Target => False));
+          Contained_Colors => Colors,
+          Contains_Target  => False));
    end Add_Rule;
 
 end Day_7_Handy_Haversacks_Runtime;

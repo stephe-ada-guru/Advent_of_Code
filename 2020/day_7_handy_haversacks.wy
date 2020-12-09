@@ -18,11 +18,18 @@
 rules : rule | rules rule ;
 
 rule
-  : color 'bags' 'contain' NUMBER color bag_bags [',' NUMBER color bag_bags] '.'
+  : color 'bags' 'contain' contained_bags '.'
     %(Add_Rule (User_Data, Tree, Nonterm, Tokens);)%
   | color 'bags' 'contain' 'no' 'other' 'bags' '.'
     %(Add_Rule (User_Data, Tree, Nonterm, Tokens);)%
   ;
+
+contained_bags
+  : contained_bag
+  | contained_bags ',' contained_bag
+  ;
+
+contained_bag : NUMBER color bag_bags ;
 
 color
   : IDENTIFIER IDENTIFIER

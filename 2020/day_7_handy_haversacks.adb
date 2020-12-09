@@ -39,7 +39,8 @@ begin
    if Verbose then
       Put_Line ("colors:");
       for Cur in Data.Colors.Iterate loop
-         Put_Line ("'" & Day_7_Handy_Haversacks_Runtime.Color_ID_Maps.Key (Cur) & "'");
+         Put_Line (Day_7_Handy_Haversacks_Runtime.Color_ID_Maps.Element (Cur)'Image &
+                     " '" & Day_7_Handy_Haversacks_Runtime.Color_ID_Maps.Key (Cur) & "'");
       end loop;
    end if;
 
@@ -75,11 +76,25 @@ begin
       loop
          Result := 0;
          for Rule of Rules loop
-            if Contains_Target (Rule.Contained_Color_1) or
-              Contains_Target (Rule.Contained_Color_2)
-            then
+            if Rule.Contains_Target then
                Result := @ + 1;
-               Rule.Contains_Target := True;
+               if Verbose then
+                  Put_Line (Rule.Containing_Color'Image & " contains target");
+               end if;
+            else
+               for Color of Rule.Contained_Colors loop
+                  if Contains_Target (Color) then
+                     if Rule.Contains_Target then
+                        null;
+                     else
+                        if Verbose then
+                           Put_Line (Rule.Containing_Color'Image & " contains target");
+                        end if;
+                        Result := @ + 1;
+                        Rule.Contains_Target := True;
+                     end if;
+                  end if;
+               end loop;
             end if;
          end loop;
 
