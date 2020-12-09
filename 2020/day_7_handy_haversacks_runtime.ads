@@ -29,11 +29,16 @@ package Day_7_Handy_Haversacks_Runtime is
      (Key_Type     => String,
       Element_Type => Color_ID);
 
-   package Color_Lists is new Ada.Containers.Doubly_Linked_Lists (Color_ID);
+   type Contained_Bag is record
+      Count : Positive;
+      Color : Color_ID;
+   end record;
+
+   package Bag_Lists is new Ada.Containers.Doubly_Linked_Lists (Contained_Bag);
 
    type Rule is record
       Containing_Color : Base_Color_ID := No_Color;
-      Contained_Colors : Color_Lists.List;
+      Contained_Bags   : Bag_Lists.List;
       Contains_Target  : Boolean       := False;
    end record;
 

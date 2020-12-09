@@ -47,9 +47,11 @@ begin
    declare
       use Day_7_Handy_Haversacks_Runtime;
       Target_Color : constant Color_ID := Color_ID_Maps.Element (Color_ID_Maps.Find (Data.Colors, "shiny gold"));
-      Result       : Integer           := 0; -- count of bag colors that can contain at least 1 target color bag
-      Last_Result  : Integer           := 0;
-      Pass         : Integer           := 1;
+
+      Count_Containing_Target : Integer := 0; -- count of bag colors that can contain at least 1 target color bag
+
+      Changed : Boolean := False;
+      Pass    : Integer := 1;
 
       Rules : array (1 .. Data.Max_Color_ID) of Rule; -- Fast random access to rules
 
@@ -68,30 +70,45 @@ begin
          return Rules (Bag_Color).Contains_Target;
       end Contains_Target;
 
+      function Count_Contained_Bags (Color : in Color_ID) return Integer
+      is
+         Result : Integer := 0;
+      begin
+         for Bag of Rules (Color).Contained_Bags loop
+            if Verbose then
+               Put (Bag.Count'Image);
+            end if;
+            Result := @ + Bag.Count * (1 + Count_Contained_Bags (Bag.Color));
+         end loop;
+         return Result;
+      end Count_Contained_Bags;
+
    begin
       for Rule of Data.Rules loop
          Rules (Rule.Containing_Color) := Rule;
       end loop;
 
       loop
-         Result := 0;
+         Count_Containing_Target := 0;
+         Changed := False;
          for Rule of Rules loop
             if Rule.Contains_Target then
-               Result := @ + 1;
+               Count_Containing_Target := @ + 1;
                if Verbose then
                   Put_Line (Rule.Containing_Color'Image & " contains target");
                end if;
             else
-               for Color of Rule.Contained_Colors loop
-                  if Contains_Target (Color) then
+               for Bag of Rule.Contained_Bags loop
+                  if Contains_Target (Bag.Color) then
                      if Rule.Contains_Target then
                         null;
                      else
                         if Verbose then
                            Put_Line (Rule.Containing_Color'Image & " contains target");
                         end if;
-                        Result := @ + 1;
-                        Rule.Contains_Target := True;
+                        Changed                 := True;
+                        Count_Containing_Target := @ + 1;
+                        Rule.Contains_Target    := True;
                      end if;
                   end if;
                end loop;
@@ -99,13 +116,14 @@ begin
          end loop;
 
          if Verbose then
-            Put_Line ("pass" & Pass'Image & ":" & Result'Image);
+            Put_Line ("pass" & Pass'Image & ":" & Count_Containing_Target'Image);
          end if;
-         exit when Last_Result = Result;
-         Last_Result := Result;
+         exit when not Changed;
          Pass := @ + 1;
       end loop;
-      Put_Line ("result" & Result'Image);
+      Put_Line ("Count_Containing_Target" & Count_Containing_Target'Image);
+
+      Put_Line ("Count_Contained_Bags" & Count_Contained_Bags (Target_Color)'Image);
    end;
 
 exception

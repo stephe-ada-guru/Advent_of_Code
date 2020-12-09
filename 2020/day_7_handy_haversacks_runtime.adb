@@ -60,7 +60,7 @@ package body Day_7_Handy_Haversacks_Runtime is
          end if;
       end Find_Add_Color;
 
-      Colors : Color_Lists.List;
+      Result_Bags : Bag_Lists.List;
    begin
       case To_Token_Enum (Tree.ID (Tokens (4))) is
       when contained_bags_ID =>
@@ -70,7 +70,9 @@ package body Day_7_Handy_Haversacks_Runtime is
               (Tree, Tokens (4), +contained_bags_ID, +contained_bag_ID);
          begin
             for Bag of Bags loop
-               Colors.Append (Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tree.Child (Bag, 2)))));
+               Result_Bags.Append
+                 ((Count => Integer'Value (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tree.Child (Bag, 1)))),
+                   Color => Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tree.Child (Bag, 2))))));
             end loop;
          end;
       when NO_ID =>
@@ -82,7 +84,7 @@ package body Day_7_Handy_Haversacks_Runtime is
 
       Data.Rules.Append
         ((Containing_Color => Find_Add_Color (Data.Lexer.Buffer_Text (Tree.Byte_Region (Tokens (1)))),
-          Contained_Colors => Colors,
+          Contained_Bags   => Result_Bags,
           Contains_Target  => False));
    end Add_Rule;
 
