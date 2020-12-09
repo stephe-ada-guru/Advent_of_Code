@@ -1,2 +1,6 @@
 build/*.exe
 build/obj
+build/*.adb
+build/*.ads
+build/*.parse_table
+build/*.c

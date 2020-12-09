@@ -1,0 +1,36 @@
+%meta_syntax EBNF
+
+%generate lr1 Ada re2c
+
+%start rules
+
+%code actions body context %{with Day_7_Handy_Haversacks_Runtime; use Day_7_Handy_Haversacks_Runtime;}%
+
+%token <number> NUMBER %[ [0-9]+ ]%
+%token <symbol> IDENTIFIER %[ [a-z]+ ]%
+
+%token <punctuation> DOT "."
+%token <punctuation> COMMA ","
+
+%non_grammar <non-reporting> WHITESPACE %[ [ \t] ]%
+%non_grammar <new-line> NEW_LINE %[ [\x0a]|[\x0d][\x0a] ]%
+
+rules : rule | rules rule ;
+
+rule
+  : color 'bags' 'contain' NUMBER color bag_bags [',' NUMBER color bag_bags] '.'
+    %(Add_Rule (User_Data, Tree, Nonterm, Tokens);)%
+  | color 'bags' 'contain' 'no' 'other' 'bags' '.'
+    %(Add_Rule (User_Data, Tree, Nonterm, Tokens);)%
+  ;
+
+color
+  : IDENTIFIER IDENTIFIER
+  ;
+
+bag_bags
+  : 'bag'
+  | 'bags'
+  ;
+
+;; end of file

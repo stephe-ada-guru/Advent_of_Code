@@ -1,5 +1,11 @@
+gpr_project_path=c:/Projects/org.wisitoken/build
+gpr_project_path=c:/Projects/org.stephe_leake.sal/build
+gpr_project_path=c:/Projects/org.stephe_leake.makerules
+
 gpr_file=advent_of_code.gpr
 
 casing=advent_of_code.casing
+casing=c:/Projects/org.wisitoken/build/emacs_case_exceptions
+casing=c:/Projects/org.stephe_leake.sal/build/sal.casing
 
 -- end of file
