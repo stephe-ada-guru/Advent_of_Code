@@ -1,6 +1,6 @@
 --  Abstract :
 --
---  Advent of Code day 8
+--  Advent of Code day 10
 --
 --  Copyright (C) 2020 Stephen Leake All Rights Reserved.
 --
@@ -16,6 +16,7 @@ pragma License (GPL);
 with Ada.Command_Line;
 with Ada.Containers.Doubly_Linked_Lists;
 with Ada.Exceptions;
+with Ada.Numerics.Big_Numbers.Big_Integers;
 with Ada.Text_IO; use Ada.Text_IO;
 with GNAT.Traceback.Symbolic;
 procedure Day_10_Adapter_Array
@@ -185,10 +186,23 @@ begin
          end;
       end loop Outer_Loop;
 
-      for F of Factors loop
-         Put (F'Image);
-      end loop;
-      New_Line;
+      declare
+         use Ada.Numerics.Big_Numbers.Big_Integers;
+
+         Arrangements : Big_Integer := 1;
+      begin
+
+         for F of Factors loop
+            Arrangements := @ * To_Big_Integer (F);
+            if Verbose then
+               Put (F'Image);
+            end if;
+         end loop;
+         if Verbose then
+            New_Line;
+         end if;
+         Put_Line (To_String (Arrangements));
+      end;
    end Part_2;
 
 exception
